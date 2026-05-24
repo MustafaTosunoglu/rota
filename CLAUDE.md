@@ -37,3 +37,13 @@ Never make architectural decisions that contradict it. If a conflict arises, sto
 - Be explicit about what you're about to do before doing it.
 - If a task will touch more than 5 files, list them first and get confirmation.
 - When done with a phase, give me: ① what was built, ② what tests pass, ③ what to review before committing, ④ suggested commit message.
+
+## Design Guidelines
+- Style reference: Linear.app (clean, minimal, developer-focused)
+- Primary: #093C5D
+- Font: Inter (via Google Fonts CDN)
+- Radius: rounded-lg globally
+- Always support light + dark mode using shadcn/ui CSS variables
+- No decorative gradients or animations in v1 — function over form
+- Logo placeholder: SVG letter mark "R" in primary color
+- When in doubt about visual design, choose the simpler option and note it for review
