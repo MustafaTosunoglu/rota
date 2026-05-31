@@ -3,9 +3,12 @@ spring:
     name: rota-backend
 
   datasource:
+    # RUNTIME connects as the unprivileged rota_app role so Row-Level Security is
+    # enforced for every application query (see common.tenant.TenantAwareDataSource).
+    # Flyway uses a SEPARATE privileged connection below to run DDL / create roles.
     url: ${DB_URL:jdbc:postgresql://localhost:5432/rota}
-    username: ${DB_USERNAME:rota}
-    password: ${DB_PASSWORD:rota_dev_password}
+    username: ${DB_USERNAME:rota_app}
+    password: ${ROTA_APP_DB_PASSWORD:rota_app_dev_password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,6 +25,11 @@ spring:
 
   flyway:
     enabled: true
+    # Flyway runs as a PRIVILEGED role (creates rota_app/rota_admin, schemas, RLS).
+    # The runtime datasource above stays unprivileged (rota_app). Separate creds here.
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/rota}
+    user: ${DB_ADMIN_USERNAME:rota}
+    password: ${DB_ADMIN_PASSWORD:rota_dev_password}
     locations: classpath:db/migration
     # The dev DB may already contain the Modulith `event_publication` table (created
     # before any migrations existed); baseline-on-migrate lets Flyway adopt the current
@@ -39,9 +47,10 @@ spring:
     events:
       jdbc:
         schema-initialization:
-          # Auto-create the Spring Modulith `event_publication` table at startup.
-          # Phase 0 convenience; a Flyway migration may own this table in later phases.
-          enabled: true
+          # OFF: the runtime role rota_app has no CREATE privilege on schema public
+          # (PG15+), so it cannot self-create this table. Flyway (privileged) owns it
+          # via V005 instead. This also removes the Phase 0 shutdown warning.
+          enabled: false
 
 management:
   endpoints:
