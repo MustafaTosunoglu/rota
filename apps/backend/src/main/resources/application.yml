@@ -18,11 +18,9 @@ spring:
 
   jpa:
     hibernate:
-      # Phase 0: no domain entities or migrations yet, so there is nothing to
-      # validate. `none` lets the app boot cleanly (the Modulith event_publication
-      # table is created by schema-initialization below). Phase 1 switches this
-      # back to `validate` once Flyway migrations own the full schema.
-      ddl-auto: none
+      # Flyway owns the schema; Hibernate only VALIDATES that the JPA entity mappings
+      # match the migrated tables at startup (never creates/alters). Phase 1D onward.
+      ddl-auto: validate
     open-in-view: false
     properties:
       hibernate:
