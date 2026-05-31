@@ -23,7 +23,17 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-    # No migrations exist yet (Phase 0). Flyway will report "no migrations found".
+    # The dev DB may already contain the Modulith `event_publication` table (created
+    # before any migrations existed); baseline-on-migrate lets Flyway adopt the current
+    # state as its baseline instead of refusing to run on a non-empty schema.
+    baseline-on-migrate: true
+    placeholders:
+      # LOCAL DEV database role passwords — NOT production secrets. Same posture as the
+      # already-committed docker-compose credentials. Real secrets (encryption KEK, JWT
+      # signing keys) live in gitignored application-local.yml (added in Phase 1C/1D).
+      # Override via env vars in any shared/non-local environment.
+      rotaAppPassword: ${ROTA_APP_DB_PASSWORD:rota_app_dev_password}
+      rotaAdminPassword: ${ROTA_ADMIN_DB_PASSWORD:rota_admin_dev_password}
 
   modulith:
     events:
