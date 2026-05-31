@@ -29,6 +29,9 @@ dependencies {
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.springframework.modulith:spring-modulith-starter-core")
 	implementation("org.springframework.modulith:spring-modulith-starter-jpa")
+	// Required by Spring Security's Argon2PasswordEncoder (Argon2id password hashing).
+	// Not managed by the Spring Boot BOM, so the version is pinned explicitly (plan §4: BC 1.79+).
+	implementation("org.bouncycastle:bcprov-jdk18on:1.81")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
