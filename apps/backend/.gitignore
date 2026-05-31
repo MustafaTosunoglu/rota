@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Rota local secrets (NEVER commit) ###
+# Dev-only overrides incl. the encryption master key. Keep the .example template tracked.
+application-local.yml
+**/application-local.yml

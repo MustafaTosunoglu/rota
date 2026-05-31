@@ -1,0 +1,11 @@
+# Template for local dev secrets. Copy to `application-local.yml` (gitignored) and fill in.
+#
+#   cp application-local.yml.example application-local.yml
+#   # then set a real 32-byte base64 key:
+#   openssl rand -base64 32
+#
+# application-local.yml is loaded automatically (optional import in application.yml).
+rota:
+  encryption:
+    # 256-bit AES master key (KEK), base64-encoded (must decode to exactly 32 bytes).
+    master-key: REPLACE_WITH_BASE64_32_BYTE_KEY
