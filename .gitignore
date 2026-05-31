@@ -1,0 +1,86 @@
+# ───────────────────────────── Java / Gradle ─────────────────────────────
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# ───────────────────────────── Node / pnpm ───────────────────────────────
+node_modules/
+.pnpm-store/
+dist/
+dist-ssr/
+*.local
+.vite/
+coverage/
+*.tsbuildinfo
+
+# ───────────────────────────── Frontend build ────────────────────────────
+apps/web/dist/
+packages/api-client/src/generated/
+
+# ───────────────────────────── Tauri / Rust ──────────────────────────────
+apps/desktop/src-tauri/target/
+**/target/
+Cargo.lock
+
+# ───────────────────────────── Environment / Secrets ─────────────────────
+.env
+.env.*
+!.env.example
+*.local.yml
+application-local.yml
+application-local.yaml
+*.pem
+*.key
+*.p12
+*.keystore
+secrets/
+
+# ───────────────────────────── IDE ───────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+.factorypath
+
+# ───────────────────────────── OS ────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ───────────────────────────── Logs / Temp ───────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.turbo/
+
+# ───────────────────────────── Docker ────────────────────────────────────
+.docker-data/

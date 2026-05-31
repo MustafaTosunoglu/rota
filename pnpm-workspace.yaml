@@ -1,0 +1,10 @@
+packages:
+  - "apps/web"
+  - "apps/desktop"
+  - "packages/*"
+
+# Dependencies allowed to run install/build scripts (pnpm blocks these by
+# default for supply-chain safety). esbuild needs its postinstall to fetch
+# its native binary, which Vite depends on.
+allowBuilds:
+  esbuild: true
