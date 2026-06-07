@@ -68,8 +68,10 @@ public class AuthController {
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@Valid @RequestBody LogoutRequest request) {
-        authService.logout(request.refreshToken());
+    public void logout(@Valid @RequestBody LogoutRequest request, @AuthenticationPrincipal Jwt jwt) {
+        authService.logout(request.refreshToken(),
+                jwt == null ? null : jwt.getId(),
+                jwt == null ? null : jwt.getExpiresAt());
     }
 
     @PostMapping("/verify-email")

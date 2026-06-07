@@ -27,6 +27,11 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	// Distributed rate limiting (plan §8.5). JDK17 artifacts; NOT in the Boot BOM, version pinned.
+	// The lettuce module reuses the Lettuce client already pulled in by starter-data-redis.
+	implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
+	implementation("com.bucket4j:bucket4j_jdk17-lettuce:8.14.0")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.springframework.modulith:spring-modulith-starter-core")

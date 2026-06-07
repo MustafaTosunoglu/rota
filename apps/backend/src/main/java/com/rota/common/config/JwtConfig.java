@@ -6,13 +6,18 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.rota.common.security.BlacklistTokenValidator;
+import com.rota.common.security.TokenBlacklist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.util.StringUtils;
@@ -62,10 +67,17 @@ public class JwtConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder(RSAKey jwtRsaKey) throws JOSEException {
-        return NimbusJwtDecoder.withPublicKey(jwtRsaKey.toRSAPublicKey())
+    JwtDecoder jwtDecoder(RSAKey jwtRsaKey, ObjectProvider<TokenBlacklist> tokenBlacklist) throws JOSEException {
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(jwtRsaKey.toRSAPublicKey())
                 .signatureAlgorithm(SignatureAlgorithm.RS256)
                 .build();
+        TokenBlacklist blacklist = tokenBlacklist.getIfAvailable();
+        if (blacklist != null) {
+            // Keep the default timestamp validation and add the revocation (jti) check.
+            decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
+                    JwtValidators.createDefault(), new BlacklistTokenValidator(blacklist)));
+        }
+        return decoder;
     }
 
     private static KeyPair generateEphemeralKeyPair() {

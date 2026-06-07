@@ -55,6 +55,14 @@ spring:
           # via V005 instead. This also removes the Phase 0 shutdown warning.
           enabled: false
 
+  data:
+    redis:
+      # Used for distributed rate limiting (Bucket4j) and the access-token blacklist.
+      # Lettuce connects lazily — an unreachable Redis does not fail startup, only the
+      # Redis-backed features (which are gated by the rota.* flags below).
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
   mail:
     # Dev: maildev SMTP catcher (infra/docker-compose.yml — web UI at http://localhost:1080).
     # When host is BLANK (e.g. tests), no JavaMailSender is created and EmailConfig falls back
@@ -81,6 +89,16 @@ server:
   port: 8080
 
 rota:
+  rate-limit:
+    # Per-IP throttle on the unauthenticated /api/v1/auth/* endpoints (plan §8.5: 10/min).
+    # Disabled by default in tests; requires Redis when enabled.
+    enabled: ${ROTA_RATE_LIMIT_ENABLED:true}
+    capacity: 10
+    refill-period: 1m
+  token-blacklist:
+    # On logout, the access token's jti is stored in Redis until it would have expired,
+    # so the (short-lived) access token is rejected immediately rather than living out its TTL.
+    enabled: ${ROTA_TOKEN_BLACKLIST_ENABLED:true}
   email:
     # From address + frontend base URL used to build verification / reset links.
     from: ${ROTA_EMAIL_FROM:no-reply@rota.local}

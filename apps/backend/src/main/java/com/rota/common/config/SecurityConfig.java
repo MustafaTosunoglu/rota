@@ -1,5 +1,7 @@
 package com.rota.common.config;
 
+import com.rota.common.ratelimit.RateLimitFilter;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +26,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            JwtDecoder jwtDecoder,
-                                           JwtTenantContextFilter tenantContextFilter) throws Exception {
+                                           JwtTenantContextFilter tenantContextFilter,
+                                           ObjectProvider<RateLimitFilter> rateLimitFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // stateless bearer-token API, no cookies/sessions
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -43,6 +46,10 @@ public class SecurityConfig {
                         .decoder(jwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .addFilterAfter(tenantContextFilter, BearerTokenAuthenticationFilter.class);
+        // Throttle (per-IP) before authentication so abusive traffic is rejected cheaply.
+        // Present only when rate limiting is enabled (Redis-backed); otherwise skipped.
+        rateLimitFilter.ifAvailable(filter ->
+                http.addFilterBefore(filter, BearerTokenAuthenticationFilter.class));
         return http.build();
     }
 

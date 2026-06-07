@@ -48,6 +48,7 @@ public class TokenService {
     public String issueAccessToken(UUID userId, UUID tenantId, Collection<String> roles) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
+                .id(UUID.randomUUID().toString()) // jti — enables per-token revocation (blacklist)
                 .issuer(jwtProperties.getIssuer())
                 .issuedAt(now)
                 .expiresAt(now.plus(jwtProperties.getAccessTokenTtl()))

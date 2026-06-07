@@ -1,5 +1,6 @@
 package com.rota.iam.internal;
 
+import com.rota.common.security.TokenBlacklist;
 import com.rota.common.tenant.TenantContext;
 import com.rota.iam.jpa.RefreshTokenEntity;
 import com.rota.iam.jpa.RefreshTokenRepository;
@@ -8,6 +9,7 @@ import com.rota.iam.jpa.RoleRepository;
 import com.rota.iam.jpa.UserRoleEntity;
 import com.rota.iam.jpa.UserRepository;
 import com.rota.iam.jpa.UserRoleRepository;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +40,7 @@ public class AuthService {
     private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ObjectProvider<TokenBlacklist> tokenBlacklist;
     private final TransactionTemplate transactionTemplate;
 
     public AuthService(JdbcTemplate jdbcTemplate,
@@ -45,6 +50,7 @@ public class AuthService {
                        UserRoleRepository userRoleRepository,
                        RoleRepository roleRepository,
                        RefreshTokenRepository refreshTokenRepository,
+                       ObjectProvider<TokenBlacklist> tokenBlacklist,
                        PlatformTransactionManager transactionManager) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
@@ -53,6 +59,7 @@ public class AuthService {
         this.userRoleRepository = userRoleRepository;
         this.roleRepository = roleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenBlacklist = tokenBlacklist;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -108,15 +115,28 @@ public class AuthService {
         }
     }
 
-    /** Revoke a refresh token. Authenticated request → tenant context is already bound by the filter. */
+    /**
+     * Revoke the refresh token and blacklist the current access token (by jti) for its remaining
+     * lifetime. Authenticated request → tenant context is already bound by the filter.
+     */
     @Transactional
-    public void logout(String rawRefreshToken) {
+    public void logout(String rawRefreshToken, String accessJti, Instant accessExpiresAt) {
         refreshTokenRepository.findByTokenHash(tokenService.hash(rawRefreshToken))
                 .ifPresent(token -> {
                     if (token.getRevokedAt() == null) {
                         token.setRevokedAt(OffsetDateTime.now());
                     }
                 });
+        blacklistAccessToken(accessJti, accessExpiresAt);
+    }
+
+    private void blacklistAccessToken(String accessJti, Instant accessExpiresAt) {
+        TokenBlacklist blacklist = tokenBlacklist.getIfAvailable();
+        if (blacklist == null || accessJti == null || accessExpiresAt == null) {
+            return;
+        }
+        Duration ttl = Duration.between(Instant.now(), accessExpiresAt);
+        blacklist.blacklist(accessJti, ttl); // no-op for non-positive ttl (already expired)
     }
 
     private AuthTokens issueTokens(UUID userId, UUID tenantId, boolean updateLastLogin) {
