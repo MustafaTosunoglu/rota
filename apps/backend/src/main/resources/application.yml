@@ -55,6 +55,19 @@ spring:
           # via V005 instead. This also removes the Phase 0 shutdown warning.
           enabled: false
 
+  mail:
+    # Dev: maildev SMTP catcher (infra/docker-compose.yml — web UI at http://localhost:1080).
+    # When host is BLANK (e.g. tests), no JavaMailSender is created and EmailConfig falls back
+    # to a logging no-op sender. Prod swaps in Resend (Phase 1F).
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
 management:
   endpoints:
     web:
@@ -68,6 +81,10 @@ server:
   port: 8080
 
 rota:
+  email:
+    # From address + frontend base URL used to build verification / reset links.
+    from: ${ROTA_EMAIL_FROM:no-reply@rota.local}
+    app-base-url: ${ROTA_APP_BASE_URL:http://localhost:5173}
   encryption:
     # 256-bit AES master key (KEK), base64. NO committed default — supplied by
     # application-local.yml in dev (gitignored) and a secret manager in prod.

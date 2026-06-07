@@ -5,6 +5,7 @@ import com.rota.iam.internal.AuthService.AuthTokens;
 import com.rota.iam.internal.RegistrationService;
 import com.rota.iam.internal.RegistrationService.RegistrationCommand;
 import com.rota.iam.internal.RegistrationService.RegistrationResult;
+import com.rota.iam.internal.VerificationService;
 import com.rota.iam.jpa.UserEntity;
 import com.rota.iam.jpa.UserRepository;
 import jakarta.validation.Valid;
@@ -30,13 +31,16 @@ public class AuthController {
 
     private final RegistrationService registrationService;
     private final AuthService authService;
+    private final VerificationService verificationService;
     private final UserRepository userRepository;
 
     public AuthController(RegistrationService registrationService,
                           AuthService authService,
+                          VerificationService verificationService,
                           UserRepository userRepository) {
         this.registrationService = registrationService;
         this.authService = authService;
+        this.verificationService = verificationService;
         this.userRepository = userRepository;
     }
 
@@ -66,6 +70,32 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(@Valid @RequestBody LogoutRequest request) {
         authService.logout(request.refreshToken());
+    }
+
+    @PostMapping("/verify-email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        verificationService.verifyEmail(request.token());
+    }
+
+    /** Always 204 — never reveals whether the email exists or is already verified. */
+    @PostMapping("/verify-email/resend")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
+        verificationService.resendVerification(normalizeEmail(request.email()));
+    }
+
+    /** Always 204 — never reveals whether the email exists (no account enumeration). */
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        verificationService.requestPasswordReset(normalizeEmail(request.email()));
+    }
+
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        verificationService.resetPassword(request.token(), request.newPassword());
     }
 
     @GetMapping("/me")

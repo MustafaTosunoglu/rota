@@ -9,3 +9,10 @@ rota:
   encryption:
     # 256-bit AES master key (KEK), base64-encoded (must decode to exactly 32 bytes).
     master-key: REPLACE_WITH_BASE64_32_BYTE_KEY
+
+# Email (dev) defaults already target the maildev container (SMTP localhost:1025, web UI :1080).
+# Override here only if your SMTP catcher runs elsewhere.
+# spring:
+#   mail:
+#     host: localhost
+#     port: 1025

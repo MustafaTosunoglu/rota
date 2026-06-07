@@ -4,6 +4,7 @@ import com.rota.iam.internal.EmailAlreadyInUseException;
 import com.rota.iam.internal.EmailNotVerifiedException;
 import com.rota.iam.internal.InvalidCredentialsException;
 import com.rota.iam.internal.InvalidRefreshTokenException;
+import com.rota.iam.internal.InvalidVerificationTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +41,15 @@ public class AuthExceptionHandler {
         problem.setTitle("Email not verified");
         problem.setDetail(ex.getMessage());
         problem.setProperty("code", "email_not_verified");
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidVerificationTokenException.class)
+    public ProblemDetail handleInvalidVerificationToken(InvalidVerificationTokenException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setTitle("Invalid or expired link");
+        problem.setDetail(ex.getMessage());
+        problem.setProperty("code", "invalid_verification_token");
         return problem;
     }
 
