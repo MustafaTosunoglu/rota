@@ -72,3 +72,11 @@ rota:
     # 256-bit AES master key (KEK), base64. NO committed default — supplied by
     # application-local.yml in dev (gitignored) and a secret manager in prod.
     master-key: ${ROTA_MASTER_KEY:}
+  jwt:
+    # RS256 PEM keypair. If BLANK, an ephemeral keypair is generated at startup (dev/test
+    # convenience; tokens won't survive a restart). PROD MUST provide stable keys.
+    private-key: ${ROTA_JWT_PRIVATE_KEY:}
+    public-key: ${ROTA_JWT_PUBLIC_KEY:}
+    issuer: rota
+    access-token-ttl: 15m
+    refresh-token-ttl: 30d

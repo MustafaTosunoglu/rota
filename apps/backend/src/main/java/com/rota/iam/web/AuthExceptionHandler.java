@@ -1,6 +1,9 @@
 package com.rota.iam.web;
 
 import com.rota.iam.internal.EmailAlreadyInUseException;
+import com.rota.iam.internal.EmailNotVerifiedException;
+import com.rota.iam.internal.InvalidCredentialsException;
+import com.rota.iam.internal.InvalidRefreshTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +22,24 @@ public class AuthExceptionHandler {
         problem.setTitle("Email already in use");
         problem.setDetail("An account with this email address already exists.");
         problem.setProperty("code", "email_already_in_use");
+        return problem;
+    }
+
+    @ExceptionHandler({InvalidCredentialsException.class, InvalidRefreshTokenException.class})
+    public ProblemDetail handleUnauthorized(RuntimeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+        problem.setTitle("Authentication failed");
+        problem.setDetail(ex.getMessage());
+        problem.setProperty("code", "unauthorized");
+        return problem;
+    }
+
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ProblemDetail handleEmailNotVerified(EmailNotVerifiedException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+        problem.setTitle("Email not verified");
+        problem.setDetail(ex.getMessage());
+        problem.setProperty("code", "email_not_verified");
         return problem;
     }
 
