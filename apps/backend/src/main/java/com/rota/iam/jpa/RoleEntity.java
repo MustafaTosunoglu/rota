@@ -1,7 +1,10 @@
 package com.rota.iam.jpa;
 
+import com.rota.audit.api.AuditEntityListener;
+import com.rota.audit.api.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -13,6 +16,8 @@ import java.util.UUID;
 /** Maps the {@code roles} table (owner/admin/editor/viewer per tenant). */
 @Entity
 @Table(name = "roles")
+@EntityListeners(AuditEntityListener.class)
+@Auditable(type = "role", fields = {"name", "system"})
 public class RoleEntity {
 
     @Id

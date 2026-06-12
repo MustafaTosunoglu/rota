@@ -1,5 +1,8 @@
 package com.rota.iam.internal;
 
+import com.rota.audit.api.AuditActions;
+import com.rota.audit.api.AuditEvent;
+import com.rota.audit.api.AuditService;
 import com.rota.common.email.EmailProperties;
 import com.rota.common.email.EmailSender;
 import com.rota.common.tenant.TenantContext;
@@ -44,6 +47,7 @@ public class VerificationService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailSender emailSender;
     private final EmailProperties emailProperties;
+    private final AuditService auditService;
     private final TransactionTemplate transactionTemplate;
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -55,6 +59,7 @@ public class VerificationService {
                                RefreshTokenRepository refreshTokenRepository,
                                EmailSender emailSender,
                                EmailProperties emailProperties,
+                               AuditService auditService,
                                PlatformTransactionManager transactionManager) {
         this.jdbcTemplate = jdbcTemplate;
         this.tokenService = tokenService;
@@ -64,6 +69,7 @@ public class VerificationService {
         this.refreshTokenRepository = refreshTokenRepository;
         this.emailSender = emailSender;
         this.emailProperties = emailProperties;
+        this.auditService = auditService;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -89,6 +95,8 @@ public class VerificationService {
                 UserEntity user = userRepository.findById(token.getUserId())
                         .orElseThrow(InvalidVerificationTokenException::new);
                 user.setEmailVerified(true);
+                auditService.record(AuditEvent.security(
+                        AuditActions.EMAIL_VERIFIED, tenantId, user.getId(), user.getId(), null));
             });
         } finally {
             TenantContext.clear();
@@ -133,6 +141,8 @@ public class VerificationService {
                 user.setPasswordHash(passwordEncoder.encode(newRawPassword));
                 // Resetting a password invalidates every existing session.
                 refreshTokenRepository.revokeAllActiveForUser(user.getId(), OffsetDateTime.now());
+                auditService.record(AuditEvent.security(
+                        AuditActions.PASSWORD_RESET, tenantId, user.getId(), user.getId(), null));
             });
         } finally {
             TenantContext.clear();

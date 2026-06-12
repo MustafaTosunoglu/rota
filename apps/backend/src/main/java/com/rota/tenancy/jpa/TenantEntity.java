@@ -1,7 +1,10 @@
 package com.rota.tenancy.jpa;
 
+import com.rota.audit.api.AuditEntityListener;
+import com.rota.audit.api.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -21,6 +24,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "tenants")
+@EntityListeners(AuditEntityListener.class)
+@Auditable(type = "tenant", fields = {"slug", "name", "plan"})
 public class TenantEntity {
 
     @Id

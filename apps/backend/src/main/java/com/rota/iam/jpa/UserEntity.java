@@ -1,7 +1,10 @@
 package com.rota.iam.jpa;
 
+import com.rota.audit.api.AuditEntityListener;
+import com.rota.audit.api.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -16,9 +19,14 @@ import java.util.UUID;
  *
  * <p>{@code tenantId} is a plain UUID column, NOT a JPA relation to the tenancy module's
  * entity — modules stay decoupled and communicate via events, not shared entities.
+ *
+ * <p>Audited via an allow-list that deliberately EXCLUDES secrets (passwordHash, mfaSecret,
+ * refreshTokenHash) and the noisy lastLoginAt — see {@link Auditable}.
  */
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditEntityListener.class)
+@Auditable(type = "user", fields = {"email", "displayName", "locale", "emailVerified"})
 public class UserEntity {
 
     @Id

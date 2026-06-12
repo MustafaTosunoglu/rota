@@ -1,5 +1,8 @@
 package com.rota.iam.internal;
 
+import com.rota.audit.api.AuditActions;
+import com.rota.audit.api.AuditEvent;
+import com.rota.audit.api.AuditService;
 import com.rota.common.security.TokenBlacklist;
 import com.rota.common.tenant.TenantContext;
 import com.rota.iam.jpa.RefreshTokenEntity;
@@ -41,6 +44,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ObjectProvider<TokenBlacklist> tokenBlacklist;
+    private final AuditService auditService;
     private final TransactionTemplate transactionTemplate;
 
     public AuthService(JdbcTemplate jdbcTemplate,
@@ -51,6 +55,7 @@ public class AuthService {
                        RoleRepository roleRepository,
                        RefreshTokenRepository refreshTokenRepository,
                        ObjectProvider<TokenBlacklist> tokenBlacklist,
+                       AuditService auditService,
                        PlatformTransactionManager transactionManager) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
@@ -60,6 +65,7 @@ public class AuthService {
         this.roleRepository = roleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.tokenBlacklist = tokenBlacklist;
+        this.auditService = auditService;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -76,6 +82,9 @@ public class AuthService {
 
         if (lookup == null || lookup.passwordHash() == null
                 || !passwordEncoder.matches(rawPassword, lookup.passwordHash())) {
+            if (lookup != null) {
+                recordSecurityEvent(lookup.tenantId(), lookup.id(), AuditActions.LOGIN_FAILED);
+            }
             throw new InvalidCredentialsException();
         }
         if (!lookup.emailVerified()) {
@@ -86,7 +95,21 @@ public class AuthService {
         UUID userId = lookup.id();
         TenantContext.setTenantId(tenantId);
         try {
-            return transactionTemplate.execute(status -> issueTokens(userId, tenantId, true));
+            return transactionTemplate.execute(status -> {
+                AuthTokens tokens = issueTokens(userId, tenantId, true);
+                auditService.record(AuditEvent.security(AuditActions.LOGIN, tenantId, userId, userId, null));
+                return tokens;
+            });
+        } finally {
+            TenantContext.clear();
+        }
+    }
+
+    /** Record a security event in its own transaction (used off the main login path, e.g. failures). */
+    private void recordSecurityEvent(UUID tenantId, UUID userId, String action) {
+        TenantContext.setTenantId(tenantId);
+        try {
+            auditService.record(AuditEvent.security(action, tenantId, userId, userId, null));
         } finally {
             TenantContext.clear();
         }
@@ -128,6 +151,8 @@ public class AuthService {
                     }
                 });
         blacklistAccessToken(accessJti, accessExpiresAt);
+        // tenant + actor resolved from the (authenticated) request context by the audit service.
+        auditService.record(AuditEvent.security(AuditActions.LOGOUT, null, null, null, null));
     }
 
     private void blacklistAccessToken(String accessJti, Instant accessExpiresAt) {
@@ -144,7 +169,8 @@ public class AuthService {
         String accessToken = tokenService.issueAccessToken(userId, tenantId, roles);
         TokenService.IssuedRefreshToken refresh = tokenService.issueRefreshToken(userId, tenantId);
         if (updateLastLogin) {
-            userRepository.findById(userId).ifPresent(user -> user.setLastLoginAt(OffsetDateTime.now()));
+            // Bulk update: bypasses the audit listener so routine logins don't churn the audit log.
+            userRepository.updateLastLogin(userId, OffsetDateTime.now());
         }
         return new AuthTokens(accessToken, refresh.rawValue(), refresh.id(), tokenService.accessTokenTtlSeconds());
     }
