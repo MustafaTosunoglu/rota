@@ -1,0 +1,76 @@
+{
+  "common": {
+    "appName": "Rota",
+    "loading": "Yükleniyor…",
+    "errors": {
+      "unexpected": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "network": "Sunucuya ulaşılamıyor. Bağlantınızı kontrol edip tekrar deneyin."
+    }
+  },
+  "validation": {
+    "emailInvalid": "Geçerli bir e-posta adresi girin.",
+    "passwordMin": "Şifre en az 10 karakter olmalı.",
+    "passwordMax": "Şifre en fazla 200 karakter olmalı.",
+    "required": "Bu alan zorunlu.",
+    "maxLength": "En fazla {{max}} karakter olmalı."
+  },
+  "auth": {
+    "email": "E-posta",
+    "password": "Şifre",
+    "login": {
+      "title": "Rota'ya giriş yap",
+      "description": "E-posta ve şifrenizi girin",
+      "submit": "Giriş yap",
+      "noAccount": "Hesabınız yok mu?",
+      "signupLink": "Kayıt ol",
+      "forgotLink": "Şifrenizi mi unuttunuz?",
+      "invalidCredentials": "E-posta veya şifre hatalı."
+    },
+    "signup": {
+      "title": "Hesabınızı oluşturun",
+      "description": "API'lerinizi dakikalar içinde belgelemeye başlayın",
+      "organizationName": "Organizasyon adı",
+      "displayName": "Adınız",
+      "submit": "Hesap oluştur",
+      "haveAccount": "Zaten hesabınız var mı?",
+      "loginLink": "Giriş yap",
+      "success": "Hesap oluşturuldu. {{email}} adresine doğrulama bağlantısı gönderdik — gelen kutunuzu kontrol edin.",
+      "emailTaken": "Bu e-posta zaten kayıtlı."
+    },
+    "forgot": {
+      "title": "Şifrenizi sıfırlayın",
+      "description": "Size bir sıfırlama bağlantısı göndereceğiz",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "done": "Bu adrese kayıtlı bir hesap varsa, sıfırlama bağlantısı yolda.",
+      "backToLogin": "Girişe dön"
+    },
+    "reset": {
+      "title": "Yeni bir şifre belirleyin",
+      "description": "Yeni şifreniz diğer tüm oturumları kapatır",
+      "newPassword": "Yeni şifre",
+      "submit": "Yeni şifreyi kaydet",
+      "success": "Şifre güncellendi. Artık onunla giriş yapabilirsiniz.",
+      "invalidToken": "Bu sıfırlama bağlantısı geçersiz veya süresi dolmuş. Yenisini isteyin.",
+      "missingToken": "Bu sayfa e-postanızdaki bağlantıyla açılmalı."
+    },
+    "verify": {
+      "title": "E-posta doğrulama",
+      "verifying": "E-postanız doğrulanıyor…",
+      "success": "E-postanız doğrulandı. Artık giriş yapabilirsiniz.",
+      "invalidToken": "Bu doğrulama bağlantısı geçersiz veya süresi dolmuş.",
+      "resendPrompt": "Yeni bağlantı almak için e-postanızı girin.",
+      "resend": "Doğrulama e-postasını yeniden gönder",
+      "resent": "Bu adrese kayıtlı bir hesap varsa, yeni bağlantı yolda.",
+      "goToLogin": "Girişe git"
+    },
+    "logout": "Çıkış yap"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "Hoş geldin, {{name}}",
+    "signedInAs": "Giriş yapan",
+    "tenant": "Organizasyon",
+    "roles": "Roller",
+    "placeholder": "API dokümanlarınız ilerleyen fazlarda burada görünecek."
+  }
+}

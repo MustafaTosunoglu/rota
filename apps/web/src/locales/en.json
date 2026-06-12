@@ -1,0 +1,76 @@
+{
+  "common": {
+    "appName": "Rota",
+    "loading": "Loading…",
+    "errors": {
+      "unexpected": "Something went wrong. Please try again.",
+      "network": "Cannot reach the server. Check your connection and try again."
+    }
+  },
+  "validation": {
+    "emailInvalid": "Enter a valid email address.",
+    "passwordMin": "Password must be at least 10 characters.",
+    "passwordMax": "Password must be at most 200 characters.",
+    "required": "This field is required.",
+    "maxLength": "Must be at most {{max}} characters."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login": {
+      "title": "Sign in to Rota",
+      "description": "Enter your email and password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up",
+      "forgotLink": "Forgot password?",
+      "invalidCredentials": "Email or password is incorrect."
+    },
+    "signup": {
+      "title": "Create your account",
+      "description": "Start documenting your APIs in minutes",
+      "organizationName": "Organization name",
+      "displayName": "Your name",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "success": "Account created. We sent a verification link to {{email}} — check your inbox.",
+      "emailTaken": "This email is already registered."
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "description": "We'll email you a reset link",
+      "submit": "Send reset link",
+      "done": "If an account exists for that address, a reset link is on its way.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "description": "Your new password signs you out of all other sessions",
+      "newPassword": "New password",
+      "submit": "Set new password",
+      "success": "Password updated. You can sign in with it now.",
+      "invalidToken": "This reset link is invalid or has expired. Request a new one.",
+      "missingToken": "This page needs the link from your email."
+    },
+    "verify": {
+      "title": "Email verification",
+      "verifying": "Verifying your email…",
+      "success": "Your email is verified. You can sign in now.",
+      "invalidToken": "This verification link is invalid or has expired.",
+      "resendPrompt": "Enter your email to receive a new link.",
+      "resend": "Resend verification email",
+      "resent": "If an account exists for that address, a new link is on its way.",
+      "goToLogin": "Go to sign in"
+    },
+    "logout": "Sign out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {{name}}",
+    "signedInAs": "Signed in as",
+    "tenant": "Organization",
+    "roles": "Roles",
+    "placeholder": "Your API documents will appear here in an upcoming phase."
+  }
+}

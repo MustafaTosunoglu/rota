@@ -32,6 +32,9 @@ dependencies {
 	// The lettuce module reuses the Lettuce client already pulled in by starter-data-redis.
 	implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
 	implementation("com.bucket4j:bucket4j_jdk17-lettuce:8.14.0")
+	// OpenAPI JSON at /v3/api-docs — input for the frontend Orval codegen (plan §11.4).
+	// Spec-only starter (no swagger-ui). Not in the Boot BOM; 2.8.x line targets Boot 3.x.
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.17")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.springframework.modulith:spring-modulith-starter-core")
@@ -42,7 +45,9 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
-	runtimeOnly("org.springframework.modulith:spring-modulith-observability")
+	// NOTE: spring-modulith-observability is intentionally absent (re-evaluate in Faz 18,
+	// plan §14.3): it CGLIB-proxies every bean of the OPEN `common` module for trace spans,
+	// which breaks servlet filters (GenericFilterBean.init() is final → NPE at Tomcat start).
 	runtimeOnly("org.springframework.modulith:spring-modulith-runtime")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

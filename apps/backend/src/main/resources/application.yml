@@ -100,9 +100,13 @@ rota:
     # so the (short-lived) access token is rejected immediately rather than living out its TTL.
     enabled: ${ROTA_TOKEN_BLACKLIST_ENABLED:true}
   email:
+    # Provider: smtp (dev → maildev, needs spring.mail.host) or resend (prod HTTP API).
+    provider: ${ROTA_EMAIL_PROVIDER:smtp}
     # From address + frontend base URL used to build verification / reset links.
     from: ${ROTA_EMAIL_FROM:no-reply@rota.local}
     app-base-url: ${ROTA_APP_BASE_URL:http://localhost:5173}
+    # Resend API key — secret; NO committed default (application-local.yml / secret manager).
+    resend-api-key: ${ROTA_RESEND_API_KEY:}
   encryption:
     # 256-bit AES master key (KEK), base64. NO committed default — supplied by
     # application-local.yml in dev (gitignored) and a secret manager in prod.
