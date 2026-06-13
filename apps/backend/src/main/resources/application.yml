@@ -2,6 +2,11 @@ spring:
   application:
     name: rota-backend
 
+  # Virtual threads: the Try It proxy (Phase 5) issues blocking outbound HTTP on them.
+  threads:
+    virtual:
+      enabled: true
+
   # Loads gitignored dev overrides (e.g. the encryption master key) when present.
   # `optional:` => silently skipped in CI / prod where the file does not exist.
   config:
@@ -99,6 +104,12 @@ rota:
     # On logout, the access token's jti is stored in Redis until it would have expired,
     # so the (short-lived) access token is rejected immediately rather than living out its TTL.
     enabled: ${ROTA_TOKEN_BLACKLIST_ENABLED:true}
+  proxy:
+    # Try It server proxy (plan §13.1). SSRF block ON by default; disable only for local dev
+    # to allow targeting localhost APIs. Daily quota needs Redis (disabled in tests).
+    block-private-networks: ${ROTA_PROXY_BLOCK_PRIVATE:true}
+    daily-free-limit: ${ROTA_PROXY_DAILY_LIMIT:100}
+    daily-limit-enabled: ${ROTA_PROXY_DAILY_LIMIT_ENABLED:true}
   email:
     # Provider: smtp (dev → maildev, needs spring.mail.host) or resend (prod HTTP API).
     provider: ${ROTA_EMAIL_PROVIDER:smtp}

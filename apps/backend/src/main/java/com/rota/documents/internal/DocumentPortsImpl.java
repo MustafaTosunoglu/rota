@@ -3,12 +3,14 @@ package com.rota.documents.internal;
 import com.rota.documents.api.DocumentExport;
 import com.rota.documents.api.DocumentExportReader;
 import com.rota.documents.api.DocumentVersionNotFoundException;
+import com.rota.documents.api.EnvironmentResolver;
 import com.rota.documents.api.EnvironmentSpec;
 import com.rota.documents.api.EnvironmentWriter;
 import com.rota.documents.jpa.DocumentEntity;
 import com.rota.documents.jpa.DocumentRepository;
 import com.rota.documents.jpa.DocumentVersionEntity;
 import com.rota.documents.jpa.DocumentVersionRepository;
+import com.rota.documents.jpa.EnvironmentEntity;
 import com.rota.documents.jpa.EnvironmentRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +19,11 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Implements the documents-module cross-module ports used by the importer/exporter.
+ * Implements the documents-module cross-module ports used by the importer/exporter/proxy.
  * Everything is RLS-scoped through the repositories; an out-of-tenant version is invisible.
  */
 @Component
-class DocumentPortsImpl implements EnvironmentWriter, DocumentExportReader {
+class DocumentPortsImpl implements EnvironmentWriter, DocumentExportReader, EnvironmentResolver {
 
     private final DocumentVersionRepository versions;
     private final DocumentRepository documents;
@@ -36,6 +38,15 @@ class DocumentPortsImpl implements EnvironmentWriter, DocumentExportReader {
         this.documents = documents;
         this.environments = environments;
         this.environmentService = environmentService;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EnvironmentTarget resolve(UUID environmentId) {
+        EnvironmentEntity environment = environments.findById(environmentId)
+                .orElseThrow(() -> new DocumentVersionNotFoundException(environmentId));
+        return new EnvironmentTarget(environment.getId(), environment.getDocumentVersionId(),
+                environment.getBaseUrl(), environment.isProductionWarn());
     }
 
     @Override

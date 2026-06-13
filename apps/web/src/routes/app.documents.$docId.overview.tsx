@@ -14,6 +14,7 @@ import {
   useUpdateDocument,
 } from '@rota/api-client'
 
+import { EnvironmentsCard } from '@/components/documents/environments-card'
 import { FieldError } from '@/components/auth/field-error'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -139,6 +140,8 @@ function OverviewPage() {
           refetch()
         }}
       />
+
+      <EnvironmentsCard versionId={editingVersion.id!} editable={editingVersion.status === 'draft'} />
 
       <Card>
         <CardHeader>

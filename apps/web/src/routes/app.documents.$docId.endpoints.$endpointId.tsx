@@ -14,6 +14,7 @@ import { GeneralTab } from '@/components/editor/general-tab'
 import { ParameterEditor } from '@/components/editor/parameter-editor'
 import { RequestBodyEditor } from '@/components/editor/request-body-editor'
 import { ResponseEditor } from '@/components/editor/response-editor'
+import { TryItPanel } from '@/components/try-it/try-it-panel'
 import { MethodBadge } from '@/components/endpoints/method-badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -116,6 +117,7 @@ function EndpointEditorPage() {
           <TabsTrigger value="parameters">{t('endpoints.tabs.parameters')}</TabsTrigger>
           <TabsTrigger value="body">{t('endpoints.tabs.body')}</TabsTrigger>
           <TabsTrigger value="responses">{t('endpoints.tabs.responses')}</TabsTrigger>
+          <TabsTrigger value="tryit">{t('tryit.title')}</TabsTrigger>
           <TabsTrigger value="code">{t('endpoints.tabs.codeSamples')}</TabsTrigger>
         </TabsList>
 
@@ -149,6 +151,14 @@ function EndpointEditorPage() {
             responses={data.responses ?? []}
             editable={editable}
             onChanged={refetchEndpoint}
+          />
+        </TabsContent>
+        <TabsContent value="tryit">
+          <TryItPanel
+            endpointId={endpointId}
+            method={data.method ?? 'GET'}
+            path={data.path ?? '/'}
+            versionId={versionId}
           />
         </TabsContent>
         <TabsContent value="code">

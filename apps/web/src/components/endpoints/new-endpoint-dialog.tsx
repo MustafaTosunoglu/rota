@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { Braces } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
@@ -68,6 +69,25 @@ export function NewEndpointDialog({
     defaultValues: { method: 'GET', categoryId: UNCATEGORIZED },
   })
 
+  // Merge RHF's ref with a local one so the {} button can insert at the cursor (3.8).
+  const pathInputRef = useRef<HTMLInputElement | null>(null)
+  const { ref: registerPathRef, ...pathField } = register('path')
+
+  const insertPathVar = () => {
+    const input = pathInputRef.current
+    if (!input) {
+      return
+    }
+    const start = input.selectionStart ?? input.value.length
+    const end = input.selectionEnd ?? start
+    const next = input.value.slice(0, start) + '{}' + input.value.slice(end)
+    setValue('path', next, { shouldDirty: true, shouldValidate: true })
+    requestAnimationFrame(() => {
+      input.focus()
+      input.setSelectionRange(start + 1, start + 1)
+    })
+  }
+
   const onSubmit = async (values: FormValues) => {
     try {
       const endpoint = await create.mutateAsync({
@@ -120,12 +140,29 @@ export function NewEndpointDialog({
             </div>
             <div className="flex-1 space-y-2">
               <Label htmlFor="ep-path">{t('endpoints.path')}</Label>
-              <Input
-                id="ep-path"
-                placeholder={t('endpoints.pathPlaceholder')}
-                aria-invalid={!!errors.path}
-                {...register('path')}
-              />
+              <div className="flex gap-1">
+                <Input
+                  id="ep-path"
+                  placeholder={t('endpoints.pathPlaceholder')}
+                  aria-invalid={!!errors.path}
+                  className="font-mono"
+                  {...pathField}
+                  ref={(el) => {
+                    registerPathRef(el)
+                    pathInputRef.current = el
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={insertPathVar}
+                  title={t('endpoints.params.insertPathVar')}
+                  aria-label={t('endpoints.params.insertPathVar')}
+                >
+                  <Braces className="size-4" />
+                </Button>
+              </div>
               <FieldError message={errors.path && t(errors.path.message ?? '')} />
             </div>
           </div>
