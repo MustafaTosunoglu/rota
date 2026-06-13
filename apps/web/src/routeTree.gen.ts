@@ -17,6 +17,13 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
+import { Route as AppDocumentsDocIdRouteImport } from './routes/app.documents.$docId'
+import { Route as AppDocumentsDocIdIndexRouteImport } from './routes/app.documents.$docId.index'
+import { Route as AppDocumentsDocIdOverviewRouteImport } from './routes/app.documents.$docId.overview'
+import { Route as AppDocumentsDocIdCategoriesRouteImport } from './routes/app.documents.$docId.categories'
+import { Route as AppDocumentsDocIdEndpointsIndexRouteImport } from './routes/app.documents.$docId.endpoints.index'
+import { Route as AppDocumentsDocIdEndpointsEndpointIdRouteImport } from './routes/app.documents.$docId.endpoints.$endpointId'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -58,6 +65,45 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
+  id: '/documents/',
+  path: '/documents/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsDocIdRoute = AppDocumentsDocIdRouteImport.update({
+  id: '/documents/$docId',
+  path: '/documents/$docId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsDocIdIndexRoute = AppDocumentsDocIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppDocumentsDocIdRoute,
+} as any)
+const AppDocumentsDocIdOverviewRoute =
+  AppDocumentsDocIdOverviewRouteImport.update({
+    id: '/overview',
+    path: '/overview',
+    getParentRoute: () => AppDocumentsDocIdRoute,
+  } as any)
+const AppDocumentsDocIdCategoriesRoute =
+  AppDocumentsDocIdCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AppDocumentsDocIdRoute,
+  } as any)
+const AppDocumentsDocIdEndpointsIndexRoute =
+  AppDocumentsDocIdEndpointsIndexRouteImport.update({
+    id: '/endpoints/',
+    path: '/endpoints/',
+    getParentRoute: () => AppDocumentsDocIdRoute,
+  } as any)
+const AppDocumentsDocIdEndpointsEndpointIdRoute =
+  AppDocumentsDocIdEndpointsEndpointIdRouteImport.update({
+    id: '/endpoints/$endpointId',
+    path: '/endpoints/$endpointId',
+    getParentRoute: () => AppDocumentsDocIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +114,13 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/documents/$docId': typeof AppDocumentsDocIdRouteWithChildren
+  '/app/documents/': typeof AppDocumentsIndexRoute
+  '/app/documents/$docId/categories': typeof AppDocumentsDocIdCategoriesRoute
+  '/app/documents/$docId/overview': typeof AppDocumentsDocIdOverviewRoute
+  '/app/documents/$docId/': typeof AppDocumentsDocIdIndexRoute
+  '/app/documents/$docId/endpoints/$endpointId': typeof AppDocumentsDocIdEndpointsEndpointIdRoute
+  '/app/documents/$docId/endpoints/': typeof AppDocumentsDocIdEndpointsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +131,12 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/documents': typeof AppDocumentsIndexRoute
+  '/app/documents/$docId/categories': typeof AppDocumentsDocIdCategoriesRoute
+  '/app/documents/$docId/overview': typeof AppDocumentsDocIdOverviewRoute
+  '/app/documents/$docId': typeof AppDocumentsDocIdIndexRoute
+  '/app/documents/$docId/endpoints/$endpointId': typeof AppDocumentsDocIdEndpointsEndpointIdRoute
+  '/app/documents/$docId/endpoints': typeof AppDocumentsDocIdEndpointsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +148,13 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/documents/$docId': typeof AppDocumentsDocIdRouteWithChildren
+  '/app/documents/': typeof AppDocumentsIndexRoute
+  '/app/documents/$docId/categories': typeof AppDocumentsDocIdCategoriesRoute
+  '/app/documents/$docId/overview': typeof AppDocumentsDocIdOverviewRoute
+  '/app/documents/$docId/': typeof AppDocumentsDocIdIndexRoute
+  '/app/documents/$docId/endpoints/$endpointId': typeof AppDocumentsDocIdEndpointsEndpointIdRoute
+  '/app/documents/$docId/endpoints/': typeof AppDocumentsDocIdEndpointsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +167,13 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-email'
     | '/app/dashboard'
+    | '/app/documents/$docId'
+    | '/app/documents/'
+    | '/app/documents/$docId/categories'
+    | '/app/documents/$docId/overview'
+    | '/app/documents/$docId/'
+    | '/app/documents/$docId/endpoints/$endpointId'
+    | '/app/documents/$docId/endpoints/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +184,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-email'
     | '/app/dashboard'
+    | '/app/documents'
+    | '/app/documents/$docId/categories'
+    | '/app/documents/$docId/overview'
+    | '/app/documents/$docId'
+    | '/app/documents/$docId/endpoints/$endpointId'
+    | '/app/documents/$docId/endpoints'
   id:
     | '__root__'
     | '/'
@@ -121,6 +200,13 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-email'
     | '/app/dashboard'
+    | '/app/documents/$docId'
+    | '/app/documents/'
+    | '/app/documents/$docId/categories'
+    | '/app/documents/$docId/overview'
+    | '/app/documents/$docId/'
+    | '/app/documents/$docId/endpoints/$endpointId'
+    | '/app/documents/$docId/endpoints/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,15 +277,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/documents/': {
+      id: '/app/documents/'
+      path: '/documents'
+      fullPath: '/app/documents/'
+      preLoaderRoute: typeof AppDocumentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/documents/$docId': {
+      id: '/app/documents/$docId'
+      path: '/documents/$docId'
+      fullPath: '/app/documents/$docId'
+      preLoaderRoute: typeof AppDocumentsDocIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/documents/$docId/': {
+      id: '/app/documents/$docId/'
+      path: '/'
+      fullPath: '/app/documents/$docId/'
+      preLoaderRoute: typeof AppDocumentsDocIdIndexRouteImport
+      parentRoute: typeof AppDocumentsDocIdRoute
+    }
+    '/app/documents/$docId/overview': {
+      id: '/app/documents/$docId/overview'
+      path: '/overview'
+      fullPath: '/app/documents/$docId/overview'
+      preLoaderRoute: typeof AppDocumentsDocIdOverviewRouteImport
+      parentRoute: typeof AppDocumentsDocIdRoute
+    }
+    '/app/documents/$docId/categories': {
+      id: '/app/documents/$docId/categories'
+      path: '/categories'
+      fullPath: '/app/documents/$docId/categories'
+      preLoaderRoute: typeof AppDocumentsDocIdCategoriesRouteImport
+      parentRoute: typeof AppDocumentsDocIdRoute
+    }
+    '/app/documents/$docId/endpoints/': {
+      id: '/app/documents/$docId/endpoints/'
+      path: '/endpoints'
+      fullPath: '/app/documents/$docId/endpoints/'
+      preLoaderRoute: typeof AppDocumentsDocIdEndpointsIndexRouteImport
+      parentRoute: typeof AppDocumentsDocIdRoute
+    }
+    '/app/documents/$docId/endpoints/$endpointId': {
+      id: '/app/documents/$docId/endpoints/$endpointId'
+      path: '/endpoints/$endpointId'
+      fullPath: '/app/documents/$docId/endpoints/$endpointId'
+      preLoaderRoute: typeof AppDocumentsDocIdEndpointsEndpointIdRouteImport
+      parentRoute: typeof AppDocumentsDocIdRoute
+    }
   }
 }
 
+interface AppDocumentsDocIdRouteChildren {
+  AppDocumentsDocIdCategoriesRoute: typeof AppDocumentsDocIdCategoriesRoute
+  AppDocumentsDocIdOverviewRoute: typeof AppDocumentsDocIdOverviewRoute
+  AppDocumentsDocIdIndexRoute: typeof AppDocumentsDocIdIndexRoute
+  AppDocumentsDocIdEndpointsEndpointIdRoute: typeof AppDocumentsDocIdEndpointsEndpointIdRoute
+  AppDocumentsDocIdEndpointsIndexRoute: typeof AppDocumentsDocIdEndpointsIndexRoute
+}
+
+const AppDocumentsDocIdRouteChildren: AppDocumentsDocIdRouteChildren = {
+  AppDocumentsDocIdCategoriesRoute: AppDocumentsDocIdCategoriesRoute,
+  AppDocumentsDocIdOverviewRoute: AppDocumentsDocIdOverviewRoute,
+  AppDocumentsDocIdIndexRoute: AppDocumentsDocIdIndexRoute,
+  AppDocumentsDocIdEndpointsEndpointIdRoute:
+    AppDocumentsDocIdEndpointsEndpointIdRoute,
+  AppDocumentsDocIdEndpointsIndexRoute: AppDocumentsDocIdEndpointsIndexRoute,
+}
+
+const AppDocumentsDocIdRouteWithChildren =
+  AppDocumentsDocIdRoute._addFileChildren(AppDocumentsDocIdRouteChildren)
+
 interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
+  AppDocumentsDocIdRoute: typeof AppDocumentsDocIdRouteWithChildren
+  AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
+  AppDocumentsDocIdRoute: AppDocumentsDocIdRouteWithChildren,
+  AppDocumentsIndexRoute: AppDocumentsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+/* Enables the `prose` classes used by the Markdown editor/preview; without it Tailwind's
+   preflight strips list markers and the rich-text output looks unstyled. */
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 

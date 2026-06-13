@@ -21,8 +21,9 @@ export default defineConfig([
   },
   {
     // Route files export Route objects, shadcn/ui files export cva variants alongside
-    // components — both are by-design patterns of those libraries.
-    files: ['src/routes/**/*.tsx', 'src/components/ui/**/*.tsx'],
+    // components, and lib context modules pair a Provider with its hook — all by-design
+    // patterns where the Fast-Refresh "components only" rule does not apply.
+    files: ['src/routes/**/*.tsx', 'src/components/ui/**/*.tsx', 'src/lib/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },

@@ -1,13 +1,11 @@
-import { useEffect } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { LogOut } from 'lucide-react'
-import { useLogout, useMe } from '@rota/api-client'
+import { ArrowRight, FileText, Plus } from 'lucide-react'
+import { useListDocuments } from '@rota/api-client'
 
-import { Logo } from '@/components/logo'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuthStore } from '@/stores/auth'
 
 export const Route = createFileRoute('/app/dashboard')({
@@ -16,66 +14,77 @@ export const Route = createFileRoute('/app/dashboard')({
 
 function DashboardPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const me = useMe()
-  const logout = useLogout()
-  const { refreshToken, clearSession, setUser, user } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
+  const documents = useListDocuments()
 
-  // Keep the persisted identity in sync with the server.
-  useEffect(() => {
-    if (me.data) {
-      setUser(me.data)
-    }
-  }, [me.data, setUser])
-
-  const onLogout = async () => {
-    try {
-      if (refreshToken) {
-        // Revokes the refresh token and blacklists the current access token server-side.
-        await logout.mutateAsync({ data: { refreshToken } })
-      }
-    } finally {
-      clearSession()
-      void navigate({ to: '/login' })
-    }
-  }
-
-  const identity = me.data ?? user
+  const count = documents.data?.length ?? 0
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <header className="flex items-center justify-between border-b px-6 py-3">
-        <Logo />
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Button variant="outline" size="sm" onClick={() => void onLogout()}>
-            <LogOut />
-            {t('auth.logout')}
-          </Button>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 p-6">
+    <div className="mx-auto w-full max-w-5xl space-y-8 p-6">
+      <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          {identity?.displayName
-            ? t('dashboard.welcome', { name: identity.displayName })
-            : t('dashboard.title')}
+          {user?.displayName ? t('dashboard.welcome', { name: user.displayName }) : t('dashboard.title')}
         </h1>
+        <p className="text-sm text-muted-foreground">{user?.email}</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="md:col-span-2">
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <div className="space-y-1">
+              <CardTitle>{t('dashboard.documentsTitle')}</CardTitle>
+              <CardDescription>
+                {documents.isLoading ? t('common2.loading') : t('dashboard.documentCount', { count })}
+              </CardDescription>
+            </div>
+            <Button asChild size="sm">
+              <Link to="/app/documents">
+                {t('documents.new')}
+                <Plus />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {documents.isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ) : count === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                {t('dashboard.noDocuments')}
+              </p>
+            ) : (
+              <ul className="divide-y">
+                {documents.data!.slice(0, 5).map((doc) => (
+                  <li key={doc.id}>
+                    <Link
+                      to="/app/documents/$docId"
+                      params={{ docId: doc.id! }}
+                      className="flex items-center gap-3 py-2.5 text-sm hover:text-primary"
+                    >
+                      <FileText className="size-4 text-muted-foreground" />
+                      <span className="flex-1 truncate font-medium">{doc.name}</span>
+                      <ArrowRight className="size-4 text-muted-foreground" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
-            <CardTitle>{t('dashboard.signedInAs')}</CardTitle>
-            <CardDescription>{identity?.email ?? t('common.loading')}</CardDescription>
+            <CardTitle>{t('dashboard.recentActivity')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-1 text-sm text-muted-foreground">
-            <p>
-              {t('dashboard.tenant')}: <span className="font-mono">{identity?.tenantId ?? '—'}</span>
-            </p>
-            <p>
-              {t('dashboard.roles')}: {identity?.roles?.join(', ') ?? '—'}
+          <CardContent>
+            <p className="py-6 text-center text-sm text-muted-foreground">
+              {t('dashboard.activityPlaceholder')}
             </p>
           </CardContent>
         </Card>
-        <p className="text-sm text-muted-foreground">{t('dashboard.placeholder')}</p>
-      </main>
+      </div>
     </div>
   )
 }

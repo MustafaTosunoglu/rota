@@ -119,11 +119,24 @@ public class DocumentService {
 
     /** Lowercases, strips accents and collapses everything non-alphanumeric to single dashes. */
     static String slugify(String input) {
-        String normalized = Normalizer.normalize(input, Normalizer.Form.NFKD)
+        // Turkish letters are folded explicitly first: NFKD does not decompose "ı"/"İ" to an
+        // ASCII letter, so without this they would be dropped (e.g. "Açık" → "ack").
+        String folded = foldTurkish(input);
+        String normalized = Normalizer.normalize(folded, Normalizer.Form.NFKD)
                 .replaceAll("\\p{M}", "")
                 .toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("(^-+|-+$)", "");
         return normalized.isBlank() ? "doc" : normalized;
+    }
+
+    private static String foldTurkish(String input) {
+        return input
+                .replace('ı', 'i').replace('İ', 'i')
+                .replace('ş', 's').replace('Ş', 's')
+                .replace('ğ', 'g').replace('Ğ', 'g')
+                .replace('ç', 'c').replace('Ç', 'c')
+                .replace('ö', 'o').replace('Ö', 'o')
+                .replace('ü', 'u').replace('Ü', 'u');
     }
 }
