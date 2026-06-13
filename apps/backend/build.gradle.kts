@@ -35,6 +35,15 @@ dependencies {
 	// OpenAPI JSON at /v3/api-docs — input for the frontend Orval codegen (plan §11.4).
 	// Spec-only starter (no swagger-ui). Not in the Boot BOM; 2.8.x line targets Boot 3.x.
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.17")
+	// OpenAPI 3.x import parsing (plan §13.6, Phase 4). v3-only artifact (no Swagger 2/1
+	// parsers). Not in the Boot BOM, version pinned. Exclude the javax (non-jakarta) swagger
+	// flavor it pulls: springdoc already provides the jakarta flavor (same io.swagger.v3.oas
+	// FQNs), and having both breaks /v3/api-docs (javax.xml.bind ClassNotFoundException).
+	implementation("io.swagger.parser.v3:swagger-parser-v3:2.1.44") {
+		exclude(group = "io.swagger.core.v3", module = "swagger-core")
+		exclude(group = "io.swagger.core.v3", module = "swagger-models")
+		exclude(group = "io.swagger.core.v3", module = "swagger-annotations")
+	}
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.springframework.modulith:spring-modulith-starter-core")

@@ -222,5 +222,37 @@
     "codeSamples": {
       "placeholder": "Üretilmiş kod örnekleri ilerleyen bir fazda gelecek."
     }
+  },
+  "import": {
+    "title": "İçe aktar",
+    "button": "İçe aktar",
+    "format": "Format",
+    "formatOpenapi": "OpenAPI 3.x",
+    "formatPostman": "Postman v2.1",
+    "formatCurl": "cURL",
+    "uploadFile": "Dosya yükle",
+    "orPaste": "ya da içeriği yapıştır",
+    "pastePlaceholder": "OpenAPI / Postman JSON ya da bir curl komutu yapıştır…",
+    "parse": "Önizle",
+    "parsing": "Ayrıştırılıyor…",
+    "parseFailed": "İçerik ayrıştırılamadı. Formatı kontrol edip tekrar dene.",
+    "previewTitle": "Önizleme",
+    "detected": "“{{title}}” içinde {{count}} endpoint bulundu",
+    "detectedNoTitle": "{{count}} endpoint bulundu",
+    "category": "Kategori",
+    "uncategorized": "Kategorisiz",
+    "dedup": "Endpoint zaten varsa",
+    "dedupSkip": "Atla",
+    "dedupOverwrite": "Üzerine yaz",
+    "confirm": "İçe aktar",
+    "importing": "İçe aktarılıyor…",
+    "back": "Geri",
+    "done": "{{created}} oluşturuldu, {{overwritten}} üzerine yazıldı, {{skipped}} atlandı.",
+    "failed": "İçe aktarma başarısız. Lütfen tekrar dene.",
+    "empty": "İçe aktarılacak bir şey yok."
+  },
+  "export": {
+    "openapi": "OpenAPI dışa aktar",
+    "failed": "Dışa aktarma başarısız. Lütfen tekrar dene."
   }
 }

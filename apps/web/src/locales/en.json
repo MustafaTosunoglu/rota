@@ -222,5 +222,37 @@
     "codeSamples": {
       "placeholder": "Generated code samples arrive in a later phase."
     }
+  },
+  "import": {
+    "title": "Import",
+    "button": "Import",
+    "format": "Format",
+    "formatOpenapi": "OpenAPI 3.x",
+    "formatPostman": "Postman v2.1",
+    "formatCurl": "cURL",
+    "uploadFile": "Upload a file",
+    "orPaste": "or paste the content",
+    "pastePlaceholder": "Paste your OpenAPI / Postman JSON or a curl command…",
+    "parse": "Preview",
+    "parsing": "Parsing…",
+    "parseFailed": "Could not parse the content. Check the format and try again.",
+    "previewTitle": "Preview",
+    "detected": "Detected {{count}} endpoint(s) in “{{title}}”",
+    "detectedNoTitle": "Detected {{count}} endpoint(s)",
+    "category": "Category",
+    "uncategorized": "Uncategorized",
+    "dedup": "If an endpoint already exists",
+    "dedupSkip": "Skip it",
+    "dedupOverwrite": "Overwrite it",
+    "confirm": "Import",
+    "importing": "Importing…",
+    "back": "Back",
+    "done": "Imported {{created}} created, {{overwritten}} overwritten, {{skipped}} skipped.",
+    "failed": "Import failed. Please try again.",
+    "empty": "Nothing to import."
+  },
+  "export": {
+    "openapi": "Export OpenAPI",
+    "failed": "Export failed. Please try again."
   }
 }

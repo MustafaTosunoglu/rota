@@ -13,6 +13,42 @@
                 ],
                 "type": "object"
             },
+            "ApplyRequest": {
+                "properties": {
+                    "dedupMode": {
+                        "enum": [
+                            "SKIP",
+                            "OVERWRITE"
+                        ],
+                        "type": "string"
+                    },
+                    "parsed": {
+                        "$ref": "#/components/schemas/ParsedImport"
+                    }
+                },
+                "required": [
+                    "dedupMode",
+                    "parsed"
+                ],
+                "type": "object"
+            },
+            "ApplyResult": {
+                "properties": {
+                    "created": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "overwritten": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "skipped": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "CategoryResponse": {
                 "properties": {
                     "description": {
@@ -518,6 +554,20 @@
                 },
                 "type": "object"
             },
+            "EnvironmentSpec": {
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "productionWarn": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
             "ForgotPasswordRequest": {
                 "properties": {
                     "email": {
@@ -550,6 +600,124 @@
                     "updatedAt": {
                         "format": "date-time",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ImportCategory": {
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ImportEndpoint": {
+                "properties": {
+                    "authConfig": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "authType": {
+                        "type": "string"
+                    },
+                    "categoryName": {
+                        "type": "string"
+                    },
+                    "descriptionMd": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ImportParameter"
+                        },
+                        "type": "array"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "requestBodies": {
+                        "items": {
+                            "$ref": "#/components/schemas/ImportRequestBody"
+                        },
+                        "type": "array"
+                    },
+                    "responses": {
+                        "items": {
+                            "$ref": "#/components/schemas/ImportResponse"
+                        },
+                        "type": "array"
+                    },
+                    "summary": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ImportParameter": {
+                "properties": {
+                    "dataType": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ImportRequestBody": {
+                "properties": {
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ImportResponse": {
+                "properties": {
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "statusCode": {
+                        "format": "int32",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -691,6 +859,49 @@
                     "sortOrder": {
                         "format": "int32",
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ParseRequest": {
+                "properties": {
+                    "content": {
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "format": {
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "content",
+                    "format"
+                ],
+                "type": "object"
+            },
+            "ParsedImport": {
+                "properties": {
+                    "categories": {
+                        "items": {
+                            "$ref": "#/components/schemas/ImportCategory"
+                        },
+                        "type": "array"
+                    },
+                    "endpoints": {
+                        "items": {
+                            "$ref": "#/components/schemas/ImportEndpoint"
+                        },
+                        "type": "array"
+                    },
+                    "environments": {
+                        "items": {
+                            "$ref": "#/components/schemas/EnvironmentSpec"
+                        },
+                        "type": "array"
+                    },
+                    "suggestedTitle": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -2406,6 +2617,36 @@
                 ]
             }
         },
+        "/api/v1/import/parse": {
+            "post": {
+                "operationId": "parse",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ParsedImport"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "import-controller"
+                ]
+            }
+        },
         "/api/v1/invitations/accept": {
             "post": {
                 "operationId": "acceptInvitation",
@@ -2935,6 +3176,79 @@
                 },
                 "tags": [
                     "environment-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/export/openapi": {
+            "get": {
+                "operationId": "exportOpenApi",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": {},
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "export-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/import": {
+            "post": {
+                "operationId": "apply",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplyResult"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "import-controller"
                 ]
             }
         },

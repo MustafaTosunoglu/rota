@@ -8,6 +8,8 @@ import {
   type EndpointSummaryResponse,
 } from '@rota/api-client'
 
+import { ExportButton } from '@/components/endpoints/export-button'
+import { ImportWizard } from '@/components/endpoints/import-wizard'
 import { NewEndpointDialog } from '@/components/endpoints/new-endpoint-dialog'
 import { MethodBadge } from '@/components/endpoints/method-badge'
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useWorkspace } from '@/lib/workspace'
+import { Upload } from 'lucide-react'
 
 export const Route = createFileRoute('/app/documents/$docId/endpoints/')({
   component: EndpointsPage,
@@ -22,7 +25,7 @@ export const Route = createFileRoute('/app/documents/$docId/endpoints/')({
 
 function EndpointsPage() {
   const { t } = useTranslation()
-  const { documentId, editingVersion, editable } = useWorkspace()
+  const { documentId, document, editingVersion, editable } = useWorkspace()
   const versionId = editingVersion.id!
   const endpoints = useListEndpoints(versionId)
   const categories = useListCategories(versionId)
@@ -31,21 +34,35 @@ function EndpointsPage() {
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-xl font-semibold tracking-tight">{t('endpoints.title')}</h1>
-        {editable && (
-          <NewEndpointDialog
-            documentId={documentId}
-            versionId={versionId}
-            categories={categories.data ?? []}
-            trigger={
-              <Button>
-                <Plus />
-                {t('endpoints.new')}
-              </Button>
-            }
-          />
-        )}
+        <div className="flex items-center gap-2">
+          <ExportButton versionId={versionId} fileBase={document.name ?? 'api'} />
+          {editable && (
+            <ImportWizard
+              versionId={versionId}
+              trigger={
+                <Button variant="outline" size="sm">
+                  <Upload />
+                  {t('import.button')}
+                </Button>
+              }
+            />
+          )}
+          {editable && (
+            <NewEndpointDialog
+              documentId={documentId}
+              versionId={versionId}
+              categories={categories.data ?? []}
+              trigger={
+                <Button>
+                  <Plus />
+                  {t('endpoints.new')}
+                </Button>
+              }
+            />
+          )}
+        </div>
       </div>
 
       {endpoints.isLoading ? (
