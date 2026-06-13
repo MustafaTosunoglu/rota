@@ -568,6 +568,69 @@
                 },
                 "type": "object"
             },
+            "ExecuteRequest": {
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    },
+                    "endpointId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "environmentId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "headers": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "pathParams": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "queryParams": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "endpointId",
+                    "environmentId"
+                ],
+                "type": "object"
+            },
+            "ExecuteResponse": {
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    },
+                    "headers": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "latencyMs": {
+                        "format": "int64",
+                        "type": "integer"
+                    },
+                    "status": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "truncated": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
             "ForgotPasswordRequest": {
                 "properties": {
                     "email": {
@@ -599,6 +662,41 @@
                     },
                     "updatedAt": {
                         "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "HistoryEntryResponse": {
+                "properties": {
+                    "executedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "latencyMs": {
+                        "format": "int64",
+                        "type": "integer"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "requestSummary": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "responseSummary": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "statusCode": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "url": {
                         "type": "string"
                     }
                 },
@@ -902,6 +1000,19 @@
                     },
                     "suggestedTitle": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "QuotaResponse": {
+                "properties": {
+                    "limit": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "remaining": {
+                        "format": "int64",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -2554,6 +2665,40 @@
                 ]
             }
         },
+        "/api/v1/endpoints/{endpointId}/try-it-history": {
+            "get": {
+                "operationId": "history",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/HistoryEntryResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "proxy-controller"
+                ]
+            }
+        },
         "/api/v1/environments/{environmentId}": {
             "delete": {
                 "operationId": "deleteEnvironment",
@@ -2730,6 +2875,56 @@
                 },
                 "tags": [
                     "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/proxy/execute": {
+            "post": {
+                "operationId": "execute",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExecuteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExecuteResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "proxy-controller"
+                ]
+            }
+        },
+        "/api/v1/proxy/quota": {
+            "get": {
+                "operationId": "quota",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuotaResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "proxy-controller"
                 ]
             }
         },
