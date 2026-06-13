@@ -1,6 +1,449 @@
 {
     "components": {
         "schemas": {
+            "CategoryResponse": {
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "documentVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateCategoryRequest": {
+                "properties": {
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
+            "CreateDocumentRequest": {
+                "properties": {
+                    "description": {
+                        "maxLength": 5000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "initialVersionLabel": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "slug": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "visibility": {
+                        "pattern": "public|unlisted|private",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
+            "CreateEndpointRequest": {
+                "properties": {
+                    "authConfig": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "authType": {
+                        "pattern": "none|bearer|api_key|basic|oauth2",
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    },
+                    "descriptionMd": {
+                        "maxLength": 100000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "method": {
+                        "minLength": 1,
+                        "pattern": "(?i)GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS",
+                        "type": "string"
+                    },
+                    "path": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "summary": {
+                        "maxLength": 500,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "method",
+                    "path"
+                ],
+                "type": "object"
+            },
+            "CreateEnvironmentRequest": {
+                "properties": {
+                    "baseUrl": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "pattern": "https?://.+",
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "productionWarn": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "baseUrl",
+                    "name"
+                ],
+                "type": "object"
+            },
+            "CreateParameterRequest": {
+                "properties": {
+                    "dataType": {
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "defaultValue": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "example": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "location": {
+                        "minLength": 1,
+                        "pattern": "path|query|header|cookie",
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "location",
+                    "name"
+                ],
+                "type": "object"
+            },
+            "CreateRequestBodyRequest": {
+                "properties": {
+                    "contentType": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateResponseRequest": {
+                "properties": {
+                    "contentType": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "statusCode": {
+                        "format": "int32",
+                        "maximum": 599,
+                        "minimum": 100,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "statusCode"
+                ],
+                "type": "object"
+            },
+            "CreateVersionRequest": {
+                "properties": {
+                    "cloneFromVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "versionLabel": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "versionLabel"
+                ],
+                "type": "object"
+            },
+            "DocumentResponse": {
+                "properties": {
+                    "branding": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "createdBy": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "currentVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "publishedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "visibility": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EndpointDetailResponse": {
+                "properties": {
+                    "authConfig": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "authType": {
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    },
+                    "descriptionMd": {
+                        "type": "string"
+                    },
+                    "documentVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "mockEnabled": {
+                        "type": "boolean"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ParameterResponse"
+                        },
+                        "type": "array"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "requestBodies": {
+                        "items": {
+                            "$ref": "#/components/schemas/RequestBodyResponse"
+                        },
+                        "type": "array"
+                    },
+                    "responses": {
+                        "items": {
+                            "$ref": "#/components/schemas/ResponseResponse"
+                        },
+                        "type": "array"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EndpointSummaryResponse": {
+                "properties": {
+                    "authType": {
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    },
+                    "documentVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "mockEnabled": {
+                        "type": "boolean"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EnvironmentResponse": {
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    },
+                    "documentVersionId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "productionWarn": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
             "ForgotPasswordRequest": {
                 "properties": {
                     "email": {
@@ -68,6 +511,44 @@
                 },
                 "type": "object"
             },
+            "ParameterResponse": {
+                "properties": {
+                    "dataType": {
+                        "type": "string"
+                    },
+                    "defaultValue": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "endpointId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "example": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "RefreshRequest": {
                 "properties": {
                     "refreshToken": {
@@ -130,6 +611,30 @@
                 },
                 "type": "object"
             },
+            "RequestBodyResponse": {
+                "properties": {
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "endpointId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "ResendVerificationRequest": {
                 "properties": {
                     "email": {
@@ -161,6 +666,37 @@
                 ],
                 "type": "object"
             },
+            "ResponseResponse": {
+                "properties": {
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "endpointId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "statusCode": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "TokenResponse": {
                 "properties": {
                     "accessToken": {
@@ -179,6 +715,206 @@
                 },
                 "type": "object"
             },
+            "UpdateCategoryRequest": {
+                "properties": {
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDocumentRequest": {
+                "properties": {
+                    "branding": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "description": {
+                        "maxLength": 5000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "slug": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "visibility": {
+                        "pattern": "public|unlisted|private",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEndpointRequest": {
+                "properties": {
+                    "authConfig": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "authType": {
+                        "pattern": "none|bearer|api_key|basic|oauth2",
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "clearCategory": {
+                        "type": "boolean"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    },
+                    "descriptionMd": {
+                        "maxLength": 100000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "method": {
+                        "pattern": "(?i)GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS",
+                        "type": "string"
+                    },
+                    "mockEnabled": {
+                        "type": "boolean"
+                    },
+                    "path": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "summary": {
+                        "maxLength": 500,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEnvironmentRequest": {
+                "properties": {
+                    "baseUrl": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "pattern": "https?://.+",
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "productionWarn": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateParameterRequest": {
+                "properties": {
+                    "dataType": {
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "defaultValue": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "example": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "location": {
+                        "pattern": "path|query|header|cookie",
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "sortOrder": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateResponseRequest": {
+                "properties": {
+                    "contentType": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "exampleJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "schemaJson": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    },
+                    "statusCode": {
+                        "format": "int32",
+                        "maximum": 599,
+                        "minimum": 100,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateVersionRequest": {
+                "properties": {
+                    "changelogMd": {
+                        "maxLength": 50000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "versionLabel": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "VerifyEmailRequest": {
                 "properties": {
                     "token": {
@@ -189,6 +925,36 @@
                 "required": [
                     "token"
                 ],
+                "type": "object"
+            },
+            "VersionResponse": {
+                "properties": {
+                    "changelogMd": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "documentId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "publishedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "versionLabel": {
+                        "type": "string"
+                    }
+                },
                 "type": "object"
             }
         }
@@ -421,6 +1187,1103 @@
                 },
                 "tags": [
                     "auth-controller"
+                ]
+            }
+        },
+        "/api/v1/categories/{categoryId}": {
+            "delete": {
+                "operationId": "deleteCategory",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "categoryId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "category-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateCategory",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "categoryId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCategoryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "category-controller"
+                ]
+            }
+        },
+        "/api/v1/documents": {
+            "get": {
+                "operationId": "listDocuments",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/DocumentResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createDocument",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDocumentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "document-controller"
+                ]
+            }
+        },
+        "/api/v1/documents/{documentId}": {
+            "delete": {
+                "operationId": "deleteDocument",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "document-controller"
+                ]
+            },
+            "get": {
+                "operationId": "getDocument",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateDocument",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDocumentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-controller"
+                ]
+            }
+        },
+        "/api/v1/documents/{documentId}/versions": {
+            "get": {
+                "operationId": "listVersions",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/VersionResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createVersion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVersionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
+                ]
+            }
+        },
+        "/api/v1/endpoints/{endpointId}": {
+            "delete": {
+                "operationId": "deleteEndpoint",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "get": {
+                "operationId": "getEndpoint",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndpointDetailResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateEndpoint",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEndpointRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndpointSummaryResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/endpoints/{endpointId}/parameters": {
+            "post": {
+                "operationId": "createParameter",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateParameterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ParameterResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/endpoints/{endpointId}/request-bodies": {
+            "post": {
+                "operationId": "createRequestBody",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRequestBodyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RequestBodyResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/endpoints/{endpointId}/responses": {
+            "post": {
+                "operationId": "createResponse",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateResponseRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/environments/{environmentId}": {
+            "delete": {
+                "operationId": "deleteEnvironment",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "environmentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "environment-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateEnvironment",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "environmentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEnvironmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EnvironmentResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "environment-controller"
+                ]
+            }
+        },
+        "/api/v1/parameters/{parameterId}": {
+            "delete": {
+                "operationId": "deleteParameter",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "parameterId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateParameter",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "parameterId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateParameterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ParameterResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/request-bodies/{requestBodyId}": {
+            "delete": {
+                "operationId": "deleteRequestBody",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "requestBodyId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateRequestBody",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "requestBodyId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRequestBodyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RequestBodyResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/responses/{responseId}": {
+            "delete": {
+                "operationId": "deleteResponse",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "responseId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateResponse",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "responseId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateResponseRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}": {
+            "get": {
+                "operationId": "getVersion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateVersion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVersionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/archive": {
+            "post": {
+                "operationId": "archiveVersion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/categories": {
+            "get": {
+                "operationId": "listCategories",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CategoryResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "category-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createCategory",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCategoryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "category-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/endpoints": {
+            "get": {
+                "operationId": "listEndpoints",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/EndpointSummaryResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createEndpoint",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEndpointRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndpointSummaryResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "endpoint-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/environments": {
+            "get": {
+                "operationId": "listEnvironments",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/EnvironmentResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "environment-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createEnvironment",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEnvironmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EnvironmentResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "environment-controller"
+                ]
+            }
+        },
+        "/api/v1/versions/{versionId}/publish": {
+            "post": {
+                "operationId": "publishVersion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "versionId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "document-version-controller"
                 ]
             }
         }

@@ -1,0 +1,12 @@
+# Build context = apps/backend. Keep it small and NEVER bake secrets in.
+build
+.gradle
+.idea
+*.iml
+
+# Test sources aren't compiled in the image (bootJar runs with -x test).
+src/test
+
+# Dev secrets (KEK + JWT keypair) are mounted at runtime, never copied into the image.
+src/main/resources/application-local.yml
+src/main/resources/application-local.yml.example

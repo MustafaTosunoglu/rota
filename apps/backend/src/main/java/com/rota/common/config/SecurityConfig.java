@@ -5,6 +5,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -53,6 +55,21 @@ public class SecurityConfig {
         rateLimitFilter.ifAvailable(filter ->
                 http.addFilterBefore(filter, BearerTokenAuthenticationFilter.class));
         return http.build();
+    }
+
+    /**
+     * Org-role hierarchy (plan §8.4): owner ⊃ admin ⊃ editor ⊃ viewer. Lets endpoint rules
+     * state the MINIMUM role (e.g. {@code hasRole('editor')}) and have stronger roles pass.
+     * Declared {@code static} so it is applied to method security without proxying issues;
+     * Spring Security picks the bean up for {@code @PreAuthorize} automatically.
+     */
+    @Bean
+    static RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy("""
+                ROLE_owner > ROLE_admin
+                ROLE_admin > ROLE_editor
+                ROLE_editor > ROLE_viewer
+                """);
     }
 
     /** Maps the {@code roles} claim to {@code ROLE_*} authorities for method security. */

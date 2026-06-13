@@ -1,0 +1,18 @@
+# Root .dockerignore — used by the web image build (context = repo root).
+# Keep the build context small: the web image only needs the pnpm workspace manifests
+# plus apps/web and packages/api-client sources.
+**/node_modules
+**/dist
+**/build
+**/.gradle
+.git
+.gitignore
+*.log
+
+# Other workspaces / dirs the web build never touches.
+apps/backend
+apps/desktop
+docs
+infra
+.claude
+.idea

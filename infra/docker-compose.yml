@@ -1,9 +1,12 @@
-# Rota — local development infrastructure stack
-# Usage: ./scripts/dev-up.sh  (or: docker compose -f infra/docker-compose.yml up -d)
+# Rota — local development stack
+# Usage:
+#   Infra only:  ./scripts/dev-up.sh   (docker compose -f infra/docker-compose.yml up -d)
+#   Full app:    ./scripts/app-up.sh   (adds backend + web via the "app" profile)
 #
-# Services: PostgreSQL 17, Redis 7, Kafka 3.8 (KRaft), MailDev
-# NOTE: This stack runs infrastructure only. The backend (Spring Boot) runs
-# locally via ./gradlew bootRun in early phases — not containerized yet.
+# Infra services (always): PostgreSQL 17, Redis 7, Kafka 3.9 (KRaft), MailDev.
+# App services (profile "app"): the Spring Boot backend and the nginx-served web build —
+# a click-to-run copy for testing. Active coding can still use ./gradlew bootRun + pnpm dev
+# on the host (same ports, so don't run both at once).
 
 name: rota-dev
 
@@ -86,6 +89,63 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+
+  # --- Application services (only created with the "app" profile) ---
+
+  backend:
+    profiles: ["app"]
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile
+    image: rota-backend:dev
+    container_name: rota-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      maildev:
+        condition: service_started
+    environment:
+      # Activate the "local" profile and load its secrets from the mounted file below.
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_CONFIG_ADDITIONAL_LOCATION: "optional:file:/app/config/"
+      # Point the env-driven hosts at the compose service names (defaults are localhost).
+      DB_URL: jdbc:postgresql://postgres:5432/rota
+      REDIS_HOST: redis
+      MAIL_HOST: maildev
+      MAIL_PORT: "1025"
+      # Email verification / reset links must be reachable from the host browser.
+      ROTA_APP_BASE_URL: http://localhost:5173
+    volumes:
+      # Dev secrets (KEK + JWT keypair) — mounted read-only, never baked into the image.
+      - ../apps/backend/src/main/resources/application-local.yml:/app/config/application-local.yml:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      # curl ships in the temurin JRE image; -f fails on non-2xx so this only passes
+      # once the app reports health UP, not merely when the port is open.
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  web:
+    profiles: ["app"]
+    build:
+      # Repo root: the web app bundles the @rota/api-client workspace package.
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    image: rota-web:dev
+    container_name: rota-web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "5173:80"
 
 volumes:
   postgres-data:
