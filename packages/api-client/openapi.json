@@ -1,6 +1,18 @@
 {
     "components": {
         "schemas": {
+            "AcceptInvitationRequest": {
+                "properties": {
+                    "token": {
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
+                ],
+                "type": "object"
+            },
             "CategoryResponse": {
                 "properties": {
                     "description": {
@@ -149,6 +161,24 @@
                 ],
                 "type": "object"
             },
+            "CreateGroupRequest": {
+                "properties": {
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
             "CreateParameterRequest": {
                 "properties": {
                     "dataType": {
@@ -262,6 +292,28 @@
                 ],
                 "type": "object"
             },
+            "DocumentAccessResponse": {
+                "properties": {
+                    "canLoadtest": {
+                        "type": "boolean"
+                    },
+                    "canTry": {
+                        "type": "boolean"
+                    },
+                    "canView": {
+                        "type": "boolean"
+                    },
+                    "documentId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "groupId": {
+                        "format": "uuid",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "DocumentResponse": {
                 "properties": {
                     "branding": {
@@ -302,6 +354,28 @@
                         "type": "string"
                     },
                     "visibility": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EndpointAccessResponse": {
+                "properties": {
+                    "canLoadtest": {
+                        "type": "boolean"
+                    },
+                    "canTry": {
+                        "type": "boolean"
+                    },
+                    "canView": {
+                        "type": "boolean"
+                    },
+                    "endpointId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "groupId": {
+                        "format": "uuid",
                         "type": "string"
                     }
                 },
@@ -457,6 +531,43 @@
                 ],
                 "type": "object"
             },
+            "GroupResponse": {
+                "properties": {
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "InviteMemberRequest": {
+                "properties": {
+                    "email": {
+                        "format": "email",
+                        "maxLength": 254,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email"
+                ],
+                "type": "object"
+            },
             "LoginRequest": {
                 "properties": {
                     "email": {
@@ -502,6 +613,41 @@
                         "type": "array"
                     },
                     "tenantId": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "format": "uuid",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "MemberResponse": {
+                "properties": {
+                    "acceptedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "expiresAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "groupId": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "id": {
+                        "format": "uuid",
+                        "type": "string"
+                    },
+                    "invitedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "status": {
                         "type": "string"
                     },
                     "userId": {
@@ -697,6 +843,25 @@
                 },
                 "type": "object"
             },
+            "SetAccessRequest": {
+                "properties": {
+                    "canLoadtest": {
+                        "type": "boolean"
+                    },
+                    "canTry": {
+                        "type": "boolean"
+                    },
+                    "canView": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "canLoadtest",
+                    "canTry",
+                    "canView"
+                ],
+                "type": "object"
+            },
             "TokenResponse": {
                 "properties": {
                     "accessToken": {
@@ -826,6 +991,21 @@
                     },
                     "productionWarn": {
                         "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateGroupRequest": {
+                "properties": {
+                    "description": {
+                        "maxLength": 2000,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "name": {
+                        "maxLength": 200,
+                        "minLength": 0,
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1250,6 +1430,485 @@
                 },
                 "tags": [
                     "category-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups": {
+            "get": {
+                "operationId": "listConsumerGroups",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/GroupResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "post": {
+                "operationId": "createConsumerGroup",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateGroupRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}": {
+            "delete": {
+                "operationId": "deleteConsumerGroup",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "get": {
+                "operationId": "getConsumerGroup",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "patch": {
+                "operationId": "updateConsumerGroup",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateGroupRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/document-access": {
+            "get": {
+                "operationId": "listGroupDocumentAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/DocumentAccessResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/document-access/{documentId}": {
+            "delete": {
+                "operationId": "removeGroupDocumentAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "put": {
+                "operationId": "setGroupDocumentAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "documentId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetAccessRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentAccessResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/endpoint-access": {
+            "get": {
+                "operationId": "listGroupEndpointAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/EndpointAccessResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/endpoint-access/{endpointId}": {
+            "delete": {
+                "operationId": "removeGroupEndpointAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "put": {
+                "operationId": "setGroupEndpointAccess",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "endpointId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetAccessRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndpointAccessResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/members": {
+            "get": {
+                "operationId": "listGroupMembers",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/MemberResponse"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            },
+            "post": {
+                "operationId": "inviteGroupMember",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InviteMemberRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MemberResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
+                ]
+            }
+        },
+        "/api/v1/consumer-groups/{groupId}/members/{memberId}": {
+            "delete": {
+                "operationId": "removeGroupMember",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "memberId",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "consumer-group-controller"
                 ]
             }
         },
@@ -1744,6 +2403,29 @@
                 },
                 "tags": [
                     "environment-controller"
+                ]
+            }
+        },
+        "/api/v1/invitations/accept": {
+            "post": {
+                "operationId": "acceptInvitation",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AcceptInvitationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "tags": [
+                    "invitation-controller"
                 ]
             }
         },
